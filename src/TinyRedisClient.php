@@ -38,9 +38,13 @@ class TinyRedisClient
 
     private function getSocket()
     {
-        return $this->socket
+        $socket = $this->socket
             ? $this->socket
-            : ($this->socket = stream_socket_client($this->server));
+            : ($this->socket = stream_socket_client($this->server, $errno, $errstr));
+        if ($socket === false) {
+            throw new Exception($errstr);
+        }
+        return $socket;
     }
 
     private function parseResponse()
